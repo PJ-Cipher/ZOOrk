@@ -6,6 +6,7 @@
 #include "Room.h"
 
 #include <utility>
+#include <memory>
 
 
 Room::Room(const std::string &n, const std::string &d) : Location(n, d) {
@@ -31,4 +32,36 @@ std::shared_ptr<Passage> Room::getPassage(const std::string &direction) {
         std::cout << "It is impossible to go " << direction << "!\n";
         return std::make_shared<NullPassage>(this);
     }
+}
+    void Room::addItem(Item* item) {
+    items.push_back(item);
+}
+
+void Room::removeItem(const std::string &itemName) {
+    for (auto it = items.begin(); it != items.end(); ++it) {
+        if ((*it)->getName() == itemName) {
+            items.erase(it);
+            return;
+        }
+    }
+}
+
+Item* Room::getItem(const std::string &itemName) {
+    for (auto item : items) {
+        if (item->getName() == itemName) {
+            return item;
+        }
+    }
+    return nullptr;
+}
+
+Item* Room::retrieveItem(const std::string &itemName) {
+    for (auto it = items.begin(); it != items.end(); ++it) {
+        if ((*it)->getName() == itemName) {
+            Item* found = *it;
+            items.erase(it);
+            return found;
+        }
+    }
+    return nullptr;
 }

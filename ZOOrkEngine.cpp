@@ -5,6 +5,8 @@
 #include "ZOOrkEngine.h"
 
 #include <utility>
+#include <algorithm>
+#include <memory>
 
 ZOOrkEngine::ZOOrkEngine(std::shared_ptr<Room> start) {
     player = Player::instance();
@@ -31,6 +33,8 @@ void ZOOrkEngine::run() {
             handleTakeCommand(arguments);
         } else if (command == "drop") {
             handleDropCommand(arguments);
+        } else if (command == "inventory" || command == "i") {
+            handleInventoryCommand(arguments);
         } else if (command == "quit") {
             handleQuitCommand(arguments);
         } else {
@@ -64,18 +68,64 @@ void ZOOrkEngine::handleGoCommand(std::vector<std::string> arguments) {
 }
 
 void ZOOrkEngine::handleLookCommand(std::vector<std::string> arguments) {
-    // To be implemented
-    std::cout << "This functionality is not yet enabled.\n";
+    if (arguments.empty()) {
+        Room* room = player->getCurrentRoom();
+        std::cout << room->getDescription() << "\n";
+    } else {
+        std::string target = arguments[0];
+        Room* room = player->getCurrentRoom();
+        Item* item = room->getItem(target);
+        if (!item) item = player->getItem(target);
+        if (item) {
+            std::cout << item->getDescription() << "\n";
+        } else {
+            std::cout << "You don't see any " << target << " here.\n";
+        }
+    }
 }
 
 void ZOOrkEngine::handleTakeCommand(std::vector<std::string> arguments) {
-    // To be implemented
-    std::cout << "This functionality is not yet enabled.\n";
+    if (arguments.empty()) {
+        std::cout << "Take what?\n";
+        return;
+    }
+    std::string itemName = arguments[0];
+    Room* room = player->getCurrentRoom();
+    Item* item = room->retrieveItem(itemName);
+    if (item) {
+        player->addItem(item);
+        std::cout << "You pick up the " << itemName << ".\n";
+    } else {
+        std::cout << "There is no " << itemName << " here.\n";
+    }
 }
 
 void ZOOrkEngine::handleDropCommand(std::vector<std::string> arguments) {
-    // To be implemented
-    std::cout << "This functionality is not yet enabled.\n";
+    if (arguments.empty()) {
+        std::cout << "Drop what?\n";
+        return;
+    }
+    std::string itemName = arguments[0];
+    Item* item = player->getItem(itemName);
+    if (item) {
+        player->removeItem(itemName);
+        player->getCurrentRoom()->addItem(item);
+        std::cout << "You drop the " << itemName << ".\n";
+    } else {
+        std::cout << "You don't have a " << itemName << ".\n";
+    }
+}
+
+void ZOOrkEngine::handleInventoryCommand(std::vector<std::string> arguments) {
+    auto inv = player->getInventory();
+    if (inv.empty()) {
+        std::cout << "You are not carrying anything.\n";
+    } else {
+        std::cout << "You are carrying:\n";
+        for (auto item : inv) {
+            std::cout << "  - " << item->getName() << "\n";
+        }
+    }
 }
 
 void ZOOrkEngine::handleQuitCommand(std::vector<std::string> arguments) {

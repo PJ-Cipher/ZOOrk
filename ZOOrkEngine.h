@@ -10,6 +10,7 @@
 #include "Passage.h"
 #include <iostream>
 #include <sstream>
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -30,6 +31,8 @@ private:
     void handleTakeCommand(std::vector<std::string>);
 
     void handleDropCommand(std::vector<std::string>);
+
+    void handleInventoryCommand(std::vector<std::string>);
 
     void handleQuitCommand(std::vector<std::string>);
 

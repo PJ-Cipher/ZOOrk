@@ -14,12 +14,7 @@ public:
     Character(const std::string &, const std::string &);
 
 protected:
-//    std::vector<Item*> inventory;
-//    std::vector<std::string> tags;
-//    int health;
-//    int attack;
-//    int move;
-//    int initiative;
+    std::vector<Item*> inventory;
 };
 
 #endif //ZOORK_CHARACTER_H
