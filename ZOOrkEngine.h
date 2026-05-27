@@ -13,6 +13,7 @@
 #include <memory>
 #include <string>
 #include <vector>
+#include "Door.h"
 
 class ZOOrkEngine {
 public:
@@ -33,6 +34,10 @@ private:
     void handleDropCommand(std::vector<std::string>);
 
     void handleInventoryCommand(std::vector<std::string>);
+
+    void handleUnlockCommand(std::vector<std::string>);
+
+    void handleHelpCommand(std::vector<std::string>);
 
     void handleQuitCommand(std::vector<std::string>);
 

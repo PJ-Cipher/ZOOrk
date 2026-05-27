@@ -5,6 +5,7 @@
 #include "ZOOrkEngine.h"
 #include "Item.h"
 #include <memory>
+#include "Door.h"
 
 
 
@@ -15,7 +16,8 @@ int main() {
 
     std::shared_ptr<Room> airlock = std::make_shared<Room>("Airlock",
         "You are in the airlock of the ISS Nomad. Warning lights flash red. "
-        "A cracked helmet visor lies on the floor. The station interior lies to the east.\n");
+        "A cracked helmet visor lies on the floor. A keycard glints on the shelf. "
+        "The station interior lies to the east.\n");
 
     std::shared_ptr<Room> corridor = std::make_shared<Room>("Corridor A",
         "A long metallic corridor stretches before you. Flickering strip lights "
@@ -72,7 +74,18 @@ int main() {
     Passage::createBasicPassage(corridor.get(), cargo_hold.get(), "west", true);
     Passage::createBasicPassage(bridge.get(), crew_quarters.get(), "north", true);
     Passage::createBasicPassage(medical_bay.get(), research_lab.get(), "east", true);
-    Passage::createBasicPassage(research_lab.get(), alien_chamber.get(), "north", true);
+    // Locked door between research lab and alien chamber
+    auto alienDoor = std::make_shared<Door>(
+        "Alien Chamber Door",
+        "A heavy reinforced door covered in alien markings.",
+        research_lab.get(), alien_chamber.get(),
+        "keycard"
+    );
+    research_lab.get()->addPassage("north", alienDoor);
+    alien_chamber.get()->addPassage("south", 
+        std::make_shared<Passage>("Return passage", 
+            "The way back to the research lab.", 
+            alien_chamber.get(), research_lab.get()));
     Passage::createBasicPassage(engine_room.get(), reactor_core.get(), "south", true);
 
 

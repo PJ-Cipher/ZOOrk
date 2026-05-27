@@ -18,6 +18,8 @@ public:
 
     Passage(const std::string &, const std::string &, std::shared_ptr<Command>, Room*, Room*);
 
+    virtual bool isPassable() const { return true; }
+
     void setFrom(Room*);
 
     Room* getFrom() const;

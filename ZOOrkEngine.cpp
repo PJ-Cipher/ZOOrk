@@ -35,6 +35,10 @@ void ZOOrkEngine::run() {
             handleDropCommand(arguments);
         } else if (command == "inventory" || command == "i") {
             handleInventoryCommand(arguments);
+        } else if (command == "unlock") {
+            handleUnlockCommand(arguments);
+        } else if (command == "help" || command == "h") {
+            handleHelpCommand(arguments);
         } else if (command == "quit") {
             handleQuitCommand(arguments);
         } else {
@@ -62,9 +66,13 @@ void ZOOrkEngine::handleGoCommand(std::vector<std::string> arguments) {
     }
 
     Room* currentRoom = player->getCurrentRoom();
-    auto passage = currentRoom->getPassage(direction);
-    player->setCurrentRoom(passage->getTo());
+    auto passage = player->getCurrentRoom()->getPassage(direction);
+    if (passage->isPassable()) {
     passage->enter();
+    player->setCurrentRoom(passage->getTo());
+    } else {
+    passage->enter();
+    }
 }
 
 void ZOOrkEngine::handleLookCommand(std::vector<std::string> arguments) {
@@ -126,6 +134,53 @@ void ZOOrkEngine::handleInventoryCommand(std::vector<std::string> arguments) {
             std::cout << "  - " << item->getName() << "\n";
         }
     }
+}
+
+void ZOOrkEngine::handleUnlockCommand(std::vector<std::string> arguments) {
+    if (arguments.empty()) {
+        std::cout << "Unlock what? Specify a direction (e.g. 'unlock north').\n";
+        return;
+    }
+
+    std::string direction = arguments[0];
+    Room* room = player->getCurrentRoom();
+    auto passage = room->getPassage(direction);
+
+    // Try to cast to Door
+    Door* door = dynamic_cast<Door*>(passage.get());
+
+    if (!door) {
+        std::cout << "There is no locked door to the " << direction << ".\n";
+        return;
+    }
+
+    if (!door->isLocked()) {
+        std::cout << "The door is already unlocked.\n";
+        return;
+    }
+
+    // Check player inventory for the required item
+    std::string required = door->getRequiredItem();
+    Item* item = player->getItem(required);
+
+    if (item) {
+        door->unlock(required);
+    } else {
+        std::cout << "You need a " << required << " to unlock this door.\n";
+    }
+}
+
+void ZOOrkEngine::handleHelpCommand(std::vector<std::string> arguments) {
+    std::cout << "\nAvailable commands:\n";
+    std::cout << "  go [direction]       - move between rooms (north, south, east, west)\n";
+    std::cout << "  look                 - describe the current room\n";
+    std::cout << "  look [item]          - examine a specific item\n";
+    std::cout << "  take [item]          - pick up an item\n";
+    std::cout << "  drop [item]          - drop an item\n";
+    std::cout << "  inventory            - check what you are carrying\n";
+    std::cout << "  unlock [direction]   - unlock a locked door in that direction\n";
+    std::cout << "  help                 - show this list\n";
+    std::cout << "  quit                 - exit the game\n\n";
 }
 
 void ZOOrkEngine::handleQuitCommand(std::vector<std::string> arguments) {
