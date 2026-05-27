@@ -37,7 +37,7 @@ public:
             return false;
         }
     }
-
+    bool isPassable() const override { return !locked; } 
     bool isLocked() const { return locked; }
     std::string getRequiredItem() const { return requiredItemName; }
 
