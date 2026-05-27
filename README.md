@@ -97,10 +97,6 @@ ZOOrk/
 
 ---
 
-## Assignment
-
-Built for **CSE3PSD/CSE5008 Programming Assignment 3A** at La Trobe University, 2026.
-
 Starter code provided by Richard Skarbez. Extended with:
 - look, take, drop, and inventory commands
 - 10-room space station map with items
