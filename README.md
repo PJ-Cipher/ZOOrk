@@ -1,6 +1,6 @@
 # ZOOrk — Space Station Text Adventure
 
-A Zork-style text adventure game built in C++ as part of CSE3PSD/CSE5008 Programming Assignment 3A.
+A Zork-style text adventure game built in C++..
 
 You wake up aboard the **ISS Nomad** — a deep-space research station that has gone dark. Navigate 10 rooms, scavenge items, and uncover what happened in the Alien Chamber.
 
